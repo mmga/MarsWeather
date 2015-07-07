@@ -1,21 +1,18 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:id="@+id/linear_layout">
 
-    <RelativeLayout
+
+
+    <ImageView
+        android:id="@+id/main_img"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="0.68"
-        >
+        android:scaleType="centerCrop"
+        android:layout_weight="0.68"/>
 
-        <ImageView
-            android:id="@+id/main_img"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:scaleType="centerCrop"/>
-
-    </RelativeLayout>
 
     <RelativeLayout
         android:layout_weight="0.33"

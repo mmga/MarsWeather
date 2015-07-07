@@ -1,12 +1,16 @@
 package com.mmga.marsweather;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
 import android.app.Activity;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -22,7 +26,11 @@ import org.json.JSONObject;
 
 public class MainActivity extends Activity {
 
+//    private static final int _EXPAND = 1000;
+//    private static final int _SHRINK = 1001;
+    private static  int _EXPAND = 1;
     private TextView mTextDegree, mTextWeather, mTextError;
+    private LinearLayout mLinearLayout;
     MarsWeather helper = MarsWeather.getInstance();
     final static String RECENT_API_ENDPOINT = "http://marsweather.ingenology.com/v1/latest/?format=json";
     final static String IMG_API_ENDPOINT = "http://cn.bing.com/HPImageArchive.aspx?format=js&n=1";
@@ -36,11 +44,24 @@ public class MainActivity extends Activity {
         mTextWeather = (TextView) findViewById(R.id.weather);
         mTextError = (TextView) findViewById(R.id.error);
         mImageVIew = (ImageView) findViewById(R.id.main_img);
+        mLinearLayout = (LinearLayout) findViewById(R.id.linear_layout);
 
         mImageVIew.setOnClickListener(new View.OnClickListener() {
+            DisplayMetrics metrics = new DisplayMetrics();
+            int height = metrics.heightPixels;
+
             @Override
             public void onClick(View view) {
-                loadBingImage();
+
+                if (_EXPAND == 1) {
+                    mImageVIew.setClickable(false);
+                    expandImg();
+                    _EXPAND = 0;
+                } else {
+                    mImageVIew.setClickable(false);
+                    shrink();
+                    _EXPAND = 1;
+                }
             }
         });
 
@@ -148,16 +169,7 @@ public class MainActivity extends Activity {
             }
         });
         helper.add(imageRequest);
-        Log.d(">>>>>>>>", "7");
     }
-
-//    private void loadImage() {
-//        RequestQueue mQueue = Volley.newRequestQueue(MainActivity.this);
-//        ImageLoader imageLoader = new ImageLoader(mQueue, new BitmapCache());
-//        ImageLoader.ImageListener listener = ImageLoader.getImageListener(mImageVIew,
-//                R.drawable.abc_btn_default_mtrl_shape, R.drawable.abc_btn_check_material);
-//        imageLoader.get("cn.bing.com/az/hprichbg/rb/YalaNPPeafowl_ZH-CN7079851094_720x1280.jpg",listener,720,1280);
-//    }
 
     int mainColor = Color.parseColor("#FF5722");
 
@@ -165,6 +177,42 @@ public class MainActivity extends Activity {
         mImageVIew.setBackgroundColor(mainColor);
         e.printStackTrace();
     }
+
+
+    private void expandImg() {
+        mImageVIew.measure(View.MeasureSpec.makeMeasureSpec(mLinearLayout.getMeasuredWidth(), View.MeasureSpec.AT_MOST),
+                View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED));
+        int end = mImageVIew.getMeasuredHeight();
+
+
+        Animator animator = LayoutAnimator.ofHeight(mImageVIew, 0, end);
+        animator.start();
+        animator.addListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                mImageVIew.setClickable(true);
+            }
+
+        });
+    }
+
+    private void shrink() {
+        mImageVIew.measure(View.MeasureSpec.makeMeasureSpec(mLinearLayout.getMeasuredWidth(), View.MeasureSpec.AT_MOST),
+                View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED));
+        int end = mImageVIew.getMeasuredHeight();
+
+        Animator animator = LayoutAnimator.ofHeight(mImageVIew, end, 0);
+        animator.start();
+        animator.addListener(new AnimatorListenerAdapter() {
+
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                mImageVIew.setClickable(true);
+            }
+        });
+
+    }
+
 
 
 }
