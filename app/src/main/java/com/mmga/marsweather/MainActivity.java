@@ -11,6 +11,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -26,15 +27,14 @@ import org.json.JSONObject;
 
 public class MainActivity extends Activity {
 
-//    private static final int _EXPAND = 1000;
-//    private static final int _SHRINK = 1001;
-    private static  int _EXPAND = 1;
+    private static int _EXPAND = 1;
     private TextView mTextDegree, mTextWeather, mTextError;
     private LinearLayout mLinearLayout;
     MarsWeather helper = MarsWeather.getInstance();
     final static String RECENT_API_ENDPOINT = "http://marsweather.ingenology.com/v1/latest/?format=json";
     final static String IMG_API_ENDPOINT = "http://cn.bing.com/HPImageArchive.aspx?format=js&n=1";
-    private ImageView mImageVIew;
+    private ImageView mImageVIew,mInfo,mSave;
+    private RelativeLayout mBottomBar, mTextLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,7 +44,11 @@ public class MainActivity extends Activity {
         mTextWeather = (TextView) findViewById(R.id.weather);
         mTextError = (TextView) findViewById(R.id.error);
         mImageVIew = (ImageView) findViewById(R.id.main_img);
+        mInfo = (ImageView) findViewById(R.id.info);
+        mSave = (ImageView) findViewById(R.id.save);
         mLinearLayout = (LinearLayout) findViewById(R.id.linear_layout);
+        mBottomBar = (RelativeLayout) findViewById(R.id.bottom_bar);
+        mTextLayout = (RelativeLayout) findViewById(R.id.text_layout);
 
         mImageVIew.setOnClickListener(new View.OnClickListener() {
             DisplayMetrics metrics = new DisplayMetrics();
@@ -114,11 +118,11 @@ public class MainActivity extends Activity {
         Log.d(">>>>>>>>", "4");
     }
 
-
     private void txtError(Exception e) {
         mTextError.setVisibility(View.VISIBLE);
         e.printStackTrace();
     }
+
 
     private void loadBingImage() {
         CustomJsonRequest request = new CustomJsonRequest(Request.Method.GET,
@@ -177,8 +181,48 @@ public class MainActivity extends Activity {
         mImageVIew.setBackgroundColor(mainColor);
         e.printStackTrace();
     }
+//      显示底栏
+//    private void showBottomBar() {
+//        mBottomBar.setVisibility(View.VISIBLE);
+//        float infoCurX = mInfo.getTranslationX();
+//        float saveCurX = mSave.getTranslationX();
+//
+//        ObjectAnimator anim1 = ObjectAnimator.ofInt(mBottomBar, "alpha", 0, 1);
+//        ObjectAnimator anim2 = ObjectAnimator.ofFloat(mInfo, "translationX", infoCurX - 300, infoCurX);
+//        ObjectAnimator anim3 = ObjectAnimator.ofFloat(mSave, "translationX", saveCurX + 300, saveCurX);
+//
+//        AnimatorSet set = new AnimatorSet();
+//        set.setDuration(200);
+//        set.setInterpolator(new DecelerateInterpolator());
+//        set.playTogether(anim1, anim2, anim3);
+//        set.start();
+//    }
 
+//    隐藏底栏
+//    private void hideBottomBar() {
+//        float infoCurX = mInfo.getTranslationX();
+//        float saveCurX = mSave.getTranslationX();
+//
+//        ObjectAnimator anim1 = ObjectAnimator.ofInt(mBottomBar, "alpha", 1, 0);
+//        ObjectAnimator anim2 = ObjectAnimator.ofFloat(mInfo, "translationX", infoCurX, infoCurX - 300);
+//        ObjectAnimator anim3 = ObjectAnimator.ofFloat(mSave, "translationX", saveCurX, saveCurX + 300);
+//
+//        AnimatorSet set = new AnimatorSet();
+//        set.setDuration(200);
+//        set.setInterpolator(new DecelerateInterpolator());
+//        set.playTogether(anim1, anim2, anim3);
+//        set.start();
+//
+//        set.addListener(new AnimatorListenerAdapter() {
+//            @Override
+//            public void onAnimationEnd(Animator animation) {
+//                mBottomBar.setVisibility(View.GONE);
+//                shrink();
+//            }
+//        });
+//    }
 
+//      展开大图
     private void expandImg() {
         mImageVIew.measure(View.MeasureSpec.makeMeasureSpec(mLinearLayout.getMeasuredWidth(), View.MeasureSpec.AT_MOST),
                 View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED));
@@ -196,6 +240,7 @@ public class MainActivity extends Activity {
         });
     }
 
+//    收缩大图
     private void shrink() {
         mImageVIew.measure(View.MeasureSpec.makeMeasureSpec(mLinearLayout.getMeasuredWidth(), View.MeasureSpec.AT_MOST),
                 View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED));
@@ -210,7 +255,6 @@ public class MainActivity extends Activity {
                 mImageVIew.setClickable(true);
             }
         });
-
     }
 
 
